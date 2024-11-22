@@ -8,3 +8,4 @@ MISIS Neychev Optimizer Team:
 4) [**Курочкин Вадим**](https://github.com/Vadimbuildercxx) - ML
 5) [**Щелкунова Евгения**](https://github.com/jenyanya) - ML  
 
+# Solution 
