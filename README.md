@@ -50,7 +50,9 @@
 
 ## Получение PCA признаков
 
-Здесь мы решили реализовать идеи из статьи [Using machine learning to combine genetic and environmental data for maize grain yield predictions across multi‑environment trials](https://link.springer.com/content/pdf/10.1007/s00122-024-04687-w.pdf)
+Здесь мы решили реализовать идеи из статьи [Using machine learning to combine genetic and environmental data for maize grain yield predictions across multi‑environment trials](https://link.springer.com/content/pdf/10.1007/s00122-024-04687-w.pdf):
+
+![scheme](images/article.png)
 
 В этом этапе проводится обработка генотипических данных, разделённых по хромосомам, для получения признаков на основе главных компонент (PCA). 
 Данные предварительно очищаются с использованием прунинга на основе коэффициента связности (LD), чтобы минимизировать избыточность информации.
