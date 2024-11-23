@@ -9,3 +9,12 @@ MISIS Neychev Optimizer Team:
 5) [**Щелкунова Евгения**](https://github.com/jenyanya) - ML  
 
 # Solution 
+
+# Best Model
+
+```python
+Final prediction for new objects (level 0) = 
+	 0.31490 * (7 averaged models Lvl_0_Pipe_0_Mod_0_LinearL2) +
+	 0.37158 * (7 averaged models Lvl_0_Pipe_1_Mod_2_CatBoost) +
+	 0.31351 * (7 averaged models Lvl_0_Pipe_1_Mod_3_Tuned_CatBoost) 
+```
