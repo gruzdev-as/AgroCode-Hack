@@ -82,6 +82,7 @@ Final prediction for new objects (level 0) =
 ```
 
 Полный отчет об обучении модели: [report.html](logs/tabularAutoML_model_report_weather5/lama_interactive_report.html)
+Ноутбук с разработкой модели: [best_model.ipynb](notebooks/best_model.ipynb)
 
 ## Итоговые метрики:
 
