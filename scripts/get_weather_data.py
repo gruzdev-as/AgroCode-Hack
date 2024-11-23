@@ -279,7 +279,7 @@ def get_weather_data():
     final_kursk = analyze_soybean_growth(lat, lon,2019,2023)
     kursk_df  = flatten_nested_dict(final_kursk)
     df = pd.concat([voronezh_df, kursk_df], axis=0)
-    df.to_csv(r'season_data.csv')
+    df.to_csv(r'..\data\weather_season_data.csv')
     pass
 
 get_weather_data()
