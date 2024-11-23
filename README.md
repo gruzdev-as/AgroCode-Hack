@@ -50,6 +50,8 @@
 
 ## Получение PCA признаков
 
+Здесь мы решили реализовать идеи из статьи [Using machine learning to combine genetic and environmental data for maize grain yield predictions across multi‑environment trials](https://link.springer.com/content/pdf/10.1007/s00122-024-04687-w.pdf)
+
 ## Получение погодных данных
 
 ## Финальная модель
