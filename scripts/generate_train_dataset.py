@@ -14,7 +14,9 @@ def get_train_dataset(
     vcf_file_path=r'..\data\genotypes.vcf',
     output_csv_file_path=r'..\data\parsed_vcf.csv',
     h5_file_path=r'..\data\genotypes.h5',
-    weather_data_path=r'..\data\weather_by_year_v2.csv'
+    weather_data_path=r'..\data\weather_season_data.csv',
+    phenotypes_path=r'../data/phenotypes.tsv',
+    vegetation_path=r'../data/vegetation.tsv'
 ):
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
 
@@ -23,6 +25,8 @@ def get_train_dataset(
     OUTPUT_CSV_FILE_PATH = output_csv_file_path
     H5_FILE_PATH = h5_file_path
     WEATHER_DATA_PATH = weather_data_path
+    PHENOTYPES_PATH = phenotypes_path
+    VEGETATION_PATH = vegetation_path
 
     log_step('Parsing VCF to CSV')
     utils.parse_vcf_2_csv(VCF_FILE_PATH, OUTPUT_CSV_FILE_PATH)
@@ -73,8 +77,8 @@ def get_train_dataset(
     new_result_w_pca20 = pd.concat([new_result, PCA_df], axis=1)
 
     log_step('Loading and merging phenotype and vegetation data')
-    ph = pd.read_csv(r'../data/phenotypes.tsv', sep='\t')
-    vg = pd.read_csv(r'../data/vegetation.tsv', sep='\t')
+    ph = pd.read_csv(PHENOTYPES_PATH, sep='\t')
+    vg = pd.read_csv(VEGETATION_PATH, sep='\t')
     ph = ph.rename(columns={'sample': 'Sample'})
     vg = vg.rename(columns={'sample': 'Sample'})
     vg_w_ph = pd.merge(vg, ph, right_on='Sample', left_on='Sample')
