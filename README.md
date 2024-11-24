@@ -162,6 +162,10 @@ Final prediction for new objects (level 0) =
 
 # Инструкция по запуску решения
 
+<div style="border: 2px solid red; padding: 10px; background-color: #ffe6e6; color: red; border-radius: 5px;">
+  <strong>❗ Важно:</strong> требуется Python версии >= 3.7 и <= 3.11
+</div>
+
 ## 1. Клонирование репозитория
 Склонируйте репозиторий с помощью команды:
 ```bash
@@ -207,7 +211,6 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-
 
 ## 6. Кастомизация параметров (опционально)
 Вы можете передавать параметры через командную строку для настройки различных этапов пайплайна.
