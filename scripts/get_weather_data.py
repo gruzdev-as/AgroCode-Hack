@@ -277,11 +277,11 @@ def flatten_nested_dict(data):
 
 
 def get_weather_data(
-    lat_1=51.692479,
+    lat_1=51.692479,  # Воронеж
     lon_1=39.199195,
     year_start_1=2015,
     year_end_1=2017,
-    lat_2=51.734513,
+    lat_2=51.734513,  # Курск
     lon_2=36.155477,
     year_start_2=2019,
     year_end_2=2023
