@@ -1,55 +1,58 @@
 import openmeteo_requests
 import requests_cache
 import pandas as pd
-import numpy as np
 from retry_requests import retry
-from datetime import datetime, timedelta
+from datetime import timedelta
 import time
 
-def get_weather(lat, lon, start_date_str="2019-01-01", end_date_str="2023-12-30"):
-    """Получение погодных данных по API"""
+
+def get_weather(lat, lon, start_date_str='2019-01-01', end_date_str='2023-12-30'):
+    '''Получение погодных данных по API'''
     cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
     openmeteo = openmeteo_requests.Client(session=retry_session)
 
-    url = "https://archive-api.open-meteo.com/v1/archive"
+    url = 'https://archive-api.open-meteo.com/v1/archive'
 
     params = {
-        "latitude": lat,
-        "longitude": lon,
-        "start_date": start_date_str,
-        "end_date": end_date_str,
-        "hourly": ["temperature_2m", "relative_humidity_2m", "dew_point_2m", "apparent_temperature",
-                   "precipitation", "rain", "snowfall", "snow_depth", "weather_code", "pressure_msl",
-                   "surface_pressure", "cloud_cover", "cloud_cover_low", "cloud_cover_mid",
-                   "cloud_cover_high", "et0_fao_evapotranspiration", "vapour_pressure_deficit",
-                   "wind_speed_10m", "wind_speed_100m", "wind_direction_10m", "wind_direction_100m",
-                   "wind_gusts_10m", "soil_temperature_0_to_7cm", "soil_temperature_7_to_28cm",
-                   "soil_temperature_28_to_100cm", "soil_temperature_100_to_255cm",
-                   "soil_moisture_0_to_7cm", "soil_moisture_7_to_28cm", "soil_moisture_28_to_100cm",
-                   "soil_moisture_100_to_255cm", "shortwave_radiation", "direct_radiation",
-                   "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance",
-                   "terrestrial_radiation"]
+        'latitude': lat,
+        'longitude': lon,
+        'start_date': start_date_str,
+        'end_date': end_date_str,
+        'hourly': [
+            "temperature_2m", "relative_humidity_2m", "dew_point_2m", "apparent_temperature",
+            "precipitation", "rain", "snowfall", "snow_depth", "weather_code", "pressure_msl",
+            "surface_pressure", "cloud_cover", "cloud_cover_low", "cloud_cover_mid",
+            "cloud_cover_high", "et0_fao_evapotranspiration", "vapour_pressure_deficit",
+            "wind_speed_10m", "wind_speed_100m", "wind_direction_10m", "wind_direction_100m",
+            "wind_gusts_10m", "soil_temperature_0_to_7cm", "soil_temperature_7_to_28cm",
+            "soil_temperature_28_to_100cm", "soil_temperature_100_to_255cm",
+            "soil_moisture_0_to_7cm", "soil_moisture_7_to_28cm", "soil_moisture_28_to_100cm",
+            "soil_moisture_100_to_255cm", "shortwave_radiation", "direct_radiation",
+            "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance",
+            "terrestrial_radiation"
+        ]
     }
 
     responses = openmeteo.weather_api(url, params=params)
     response = responses[0]
 
     hourly = response.Hourly()
-    hourly_data = {"date": pd.date_range(
-        start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
-        end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+    hourly_data = {'date': pd.date_range(
+        start=pd.to_datetime(hourly.Time(), unit='s', utc=True),
+        end=pd.to_datetime(hourly.TimeEnd(), unit='s', utc=True),
         freq=pd.Timedelta(seconds=hourly.Interval()),
-        inclusive="left"
+        inclusive='left'
     )}
 
-    for idx, var_name in enumerate(params["hourly"]):
+    for idx, var_name in enumerate(params['hourly']):
         hourly_data[var_name] = hourly.Variables(idx).ValuesAsNumpy()
 
     return pd.DataFrame(hourly_data)
 
+
 def calculate_growth_periods(planting_date):
-    """
+    '''
     Рассчет даты для каждого периода роста на основе даты посадки.
 
     Args:
@@ -57,7 +60,7 @@ def calculate_growth_periods(planting_date):
 
     Returns:
         dict: Словарь, содержащий даты начала и окончания каждого периода роста
-    """
+    '''
     periods = {
         'emergence': {
             'start': planting_date,
@@ -90,15 +93,16 @@ def calculate_growth_periods(planting_date):
     }
     return periods
 
+
 def generate_soybean_features(hourly_df, year, planting_date=None):
-    """
+    '''
     Создание характеристик для анализа роста сои на основе физиологических периодов роста
 
     Args:
         hourly_df (pd.DataFrame): Почасовые данные о погоде
         year (int): Год для анализа
         planting_date (datetime, optional): Дата посадки. Если нет, то оценки на основе региональных условий
-    """
+    '''
     # Если дата посадки не указана, оценивается на основе температуры почвы.
     if planting_date is None:
         # Первая дата, когда температура почвы постоянно выше 10°C (благоприятно для прорастания)
@@ -108,6 +112,7 @@ def generate_soybean_features(hourly_df, year, planting_date=None):
         ]
         temp_mask = spring_data['soil_temperature_0_to_7cm'] > 10
         planting_date = spring_data[temp_mask].index[0].to_pydatetime()
+
     print(planting_date)
     # Рассчитать периоды роста
     periods = calculate_growth_periods(planting_date)
@@ -116,14 +121,16 @@ def generate_soybean_features(hourly_df, year, planting_date=None):
     hourly_df['temp_vs_apparent_diff'] = hourly_df['temperature_2m'] - hourly_df['apparent_temperature']
     hourly_df['heat_index'] = hourly_df['temperature_2m'] * (1 + hourly_df['relative_humidity_2m'] / 100)
     hourly_df['precipitation_intensity'] = hourly_df['precipitation'] / (hourly_df['rain'] + 1e-3)
-    hourly_df['wind_chill'] = 13.12 + 0.6215 * hourly_df['temperature_2m'] - 11.37 * (hourly_df['wind_speed_10m'] ** 0.16) + 0.3965 * hourly_df['temperature_2m'] * (hourly_df['wind_speed_10m'] ** 0.16)
+    hourly_df['wind_chill'] = 13.12 + 0.6215 * hourly_df['temperature_2m'] - 11.37 * (
+        hourly_df['wind_speed_10m'] ** 0.16) + 0.3965 * hourly_df['temperature_2m'] * (hourly_df['wind_speed_10m'] ** 0.16)
 
     # Характеристики почвы
     hourly_df['soil_temp_avg'] = hourly_df[['soil_temperature_0_to_7cm', 'soil_temperature_7_to_28cm',
                                            'soil_temperature_28_to_100cm', 'soil_temperature_100_to_255cm']].mean(axis=1)
     hourly_df['soil_temp_gradient'] = hourly_df['soil_temperature_0_to_7cm'] - hourly_df['soil_temperature_100_to_255cm']
     hourly_df['soil_moisture_surface'] = hourly_df[['soil_moisture_0_to_7cm', 'soil_moisture_7_to_28cm']].mean(axis=1)
-    hourly_df['soil_moisture_deep'] = hourly_df[['soil_moisture_28_to_100cm', 'soil_moisture_100_to_255cm']].mean(axis=1)
+    hourly_df['soil_moisture_deep'] = hourly_df[[
+        'soil_moisture_28_to_100cm', 'soil_moisture_100_to_255cm']].mean(axis=1)
     hourly_df['soil_moisture_diff'] = hourly_df['soil_moisture_surface'] - hourly_df['soil_moisture_deep']
 
     features = {}
@@ -192,6 +199,7 @@ def generate_soybean_features(hourly_df, year, planting_date=None):
 
     return features
 
+
 def calculate_gdd(weather_data, base_temp=10):
     """Рассчитать количество дней роста"""
     daily_temp = weather_data['temperature_2m'].resample('D').agg(['max', 'min'])
@@ -199,8 +207,9 @@ def calculate_gdd(weather_data, base_temp=10):
     gdd = (daily_temp['avg'] - base_temp).clip(lower=0).sum()
     return gdd
 
+
 def analyze_soybean_growth(lat, lon, start_year=2019, end_year=2023, planting_dates=None):
-    """
+    '''
     Полный анализ роста сои по годам
 
     Args:
@@ -209,7 +218,7 @@ def analyze_soybean_growth(lat, lon, start_year=2019, end_year=2023, planting_da
         start_year (int): Начальный год для анализа
         end_year (int): Заключительный год для анализа
         planting_dates (dict, optional): Словарь дат посадки по годам
-    """
+    '''
     # Get weather data
     start_date = f"{start_year}-01-01"
     end_date = f"{end_year}-12-31"
@@ -224,13 +233,14 @@ def analyze_soybean_growth(lat, lon, start_year=2019, end_year=2023, planting_da
 
     return yearly_features
 
+
 def print_growth_analysis(features, year):
-    """Анализ за определенный год"""
-    print(f"\nSoybean Growth Analysis for {year}:")
+    '''Анализ за определенный год'''
+    print(f'\nSoybean Growth Analysis for {year}:')
 
     for period, metrics in features.items():
         if period != 'season_total':
-            print(f"\n{period.replace('_', ' ').title()} Period:")
+            print(f'\n{period.replace('_', ' ').title()} Period:')
             for metric, value in metrics.items():
                 if 'hours' in metric:
                     print(f"  {metric}: {value:.0f} hours")
@@ -239,47 +249,46 @@ def print_growth_analysis(features, year):
                 else:
                     print(f"  {metric}: {value:.2f}")
 
-    print("\nSeason Totals:")
+    print('\nSeason Totals:')
     for metric, value in features['season_total'].items():
-        print(f"  {metric}: {value:.2f}")
+        print(f'  {metric}: {value:.2f}')
+
 
 def flatten_nested_dict(data):
     rows = []
     for year in data:
         row = {'year': year}
-    
+
         for period in data[year]:
             if period == 'season_total':
                 continue
-                
+
             for metric, value in data[year][period].items():
                 clean_metric = '_'.join(metric.split('_')[:-1]) if metric.split('_')[-1].isdigit() else metric
                 column_name = f"{clean_metric}_{period}"
                 row[column_name] = value
-        
+
         rows.append(row)
-    
+
     df = pd.DataFrame(rows)
     df.set_index('year', inplace=True)
-    
+
     return df
+
 
 def get_weather_data():
     lat = 51.692479
     lon = 39.199195
 
-    final_voronezh = analyze_soybean_growth(lat, lon,2015,2017)
-    voronezh_df  = flatten_nested_dict(final_voronezh)
-    
+    final_voronezh = analyze_soybean_growth(lat, lon, 2015, 2017)
+    voronezh_df = flatten_nested_dict(final_voronezh)
+
     time.sleep(3)
 
     lat = 51.734513
     lon = 36.155477
 
-    final_kursk = analyze_soybean_growth(lat, lon,2019,2023)
-    kursk_df  = flatten_nested_dict(final_kursk)
+    final_kursk = analyze_soybean_growth(lat, lon, 2019, 2023)
+    kursk_df = flatten_nested_dict(final_kursk)
     df = pd.concat([voronezh_df, kursk_df], axis=0)
     df.to_csv(r'..\data\weather_season_data.csv')
-    pass
-
-get_weather_data()
