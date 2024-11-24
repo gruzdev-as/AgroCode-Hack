@@ -276,19 +276,23 @@ def flatten_nested_dict(data):
     return df
 
 
-def get_weather_data():
-    lat = 51.692479
-    lon = 39.199195
-
-    final_voronezh = analyze_soybean_growth(lat, lon, 2015, 2017)
+def get_weather_data(
+    lat_1=51.692479,
+    lon_1=39.199195,
+    year_start_1=2015,
+    year_end_1=2017,
+    lat_2=51.734513,
+    lon_2=36.155477,
+    year_start_2=2019,
+    year_end_2=2023
+):
+    final_voronezh = analyze_soybean_growth(lat_1, lon_1, year_start_1, year_end_1)
     voronezh_df = flatten_nested_dict(final_voronezh)
 
     time.sleep(3)
 
-    lat = 51.734513
-    lon = 36.155477
-
-    final_kursk = analyze_soybean_growth(lat, lon, 2019, 2023)
+    final_kursk = analyze_soybean_growth(lat_2, lon_2, year_start_2, year_end_2)
     kursk_df = flatten_nested_dict(final_kursk)
+
     df = pd.concat([voronezh_df, kursk_df], axis=0)
     df.to_csv(r'..\data\weather_season_data.csv')
