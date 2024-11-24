@@ -8,7 +8,7 @@
 4) [**Курочкин Вадим**](https://github.com/Vadimbuildercxx) - ML
 5) [**Щелкунова Евгения**](https://github.com/jenyanya) - ML
 
-Презентация: тык
+Презентация: [тык](https://drive.google.com/file/d/1EwDv3uCvpwA3x-QaxYHoZzfp_knStROd/view?usp=sharing)
 
 ## Кейс "Прогнозирование урожайности"
 
