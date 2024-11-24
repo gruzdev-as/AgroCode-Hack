@@ -48,6 +48,8 @@
 8. **Распределение типов вариантов**:  
    Генерируются типы замен (например, `A>G`, `C>T`), и их частоты нормализуются. Выводится распределение наиболее частых типов вариантов для каждого образца.
 
+Скрипт: [stat.py](scripts/stat.py)
+
 ## Получение PCA признаков
 
 Здесь мы решили реализовать идеи из статьи [Using machine learning to combine genetic and environmental data for maize grain yield predictions across multi‑environment trials](https://link.springer.com/content/pdf/10.1007/s00122-024-04687-w.pdf):
@@ -65,6 +67,8 @@
 а также модель дисперсии `PCA`. Это позволяет эффективно обобщить сложные многомерные данные и подготовить их для дальнейшего анализа.
 
 Итоговые признаки агрегируются в единую таблицу, которая сохраняется для последующего использования в статистическом анализе или моделировании.
+
+Скрипт: [genom_pca.py](scripts/genom_pca.py)
 
 ## Получение погодных данных
 
@@ -108,6 +112,8 @@ Final prediction for new objects (level 0) =
 Полный отчет об обучении модели: [report.html](logs/tabularAutoML_model_report_weather5/lama_interactive_report.html)
 
 Ноутбук с разработкой модели: [best_model.ipynb](notebooks/best_model.ipynb)
+
+Скрипт: [lama_train.py](scripts/lama_train.py)
 
 ## Итоговые метрики:
 
