@@ -11,15 +11,15 @@ def log_step(message, char='-', width=80):
 
 
 def get_train_dataset(
-    vcf_file_path=r'..\data\genotypes.vcf',
-    output_csv_file_path=r'..\data\parsed_vcf.csv',
-    h5_file_path=r'..\data\genotypes.h5',
-    weather_data_path=r'..\data\weather_season_data.csv',
-    phenotypes_path=r'../data/phenotypes.tsv',
-    vegetation_path=r'../data/vegetation.tsv'
+    vcf_file_path=r'data/genotypes.vcf',
+    output_csv_file_path=r'data/parsed_vcf.csv',
+    h5_file_path=r'data/genotypes.h5',
+    weather_data_path=r'data/weather_season_data.csv',
+    phenotypes_path=r'data/phenotypes.tsv',
+    vegetation_path=r'data/vegetation.tsv'
 ):
     sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
-
+    
     log_step('Initializing file paths')
     VCF_FILE_PATH = vcf_file_path
     OUTPUT_CSV_FILE_PATH = output_csv_file_path
@@ -32,7 +32,7 @@ def get_train_dataset(
     utils.parse_vcf_2_csv(VCF_FILE_PATH, OUTPUT_CSV_FILE_PATH)
 
     log_step('Loading parsed VCF CSV')
-    df = pd.read_csv(r'..\data\parsed_vcf.csv')
+    df = pd.read_csv(r'data/parsed_vcf.csv')
 
     log_step('Extracting comprehensive genomic features')
     result = stat.extract_comprehensive_genomic_features(df)
@@ -68,7 +68,7 @@ def get_train_dataset(
     PCA_df = pd.concat(df_list, ignore_index=True)
     PCA_df = PCA_df.T
     PCA_df.columns = PCA_df.iloc[-1]
-    PCA_df.to_csv(r'../data/20_chromas+KZ.csv')
+    PCA_df.to_csv(r'data/20_chromas+KZ.csv')
 
     log_step('Resetting PCA DataFrame index')
     PCA_df = PCA_df.reset_index().drop('index', axis=1)
@@ -116,4 +116,4 @@ def get_train_dataset(
     train_with_weather = pd.merge(df_filtered, weather_features, on='year', how='left')
 
     log_step('Saving final training data')
-    train_with_weather.to_csv(r'../data/train_file.csv', index=False)
+    train_with_weather.to_csv(r'data/train_file.csv', index=False)

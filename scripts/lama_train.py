@@ -20,7 +20,7 @@ def log_step(message, char='-', width=80):
 
 
 def train_lama(
-    train_path=r'../data/train_file.csv',
+    train_path=r'data/train_file.csv',
     n_threads=4,
     n_folds=7,
     random_state=52,

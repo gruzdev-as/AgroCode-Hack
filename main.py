@@ -18,18 +18,18 @@ def parse_args():
     parser.add_argument('--year_end2', type=int, default=2023, help='End year for second location weather data')
 
     # Аргументы для генерации датасета (пути к input и output файлам)
-    parser.add_argument('--vcf_path', type=str, default='../data/genotypes.vcf', help='Path to VCF file')
-    parser.add_argument('--csv_path', type=str, default='../data/parsed_vcf.csv', help='Output CSV file path')
-    parser.add_argument('--h5_path', type=str, default='../data/genotypes.h5', help='Path to HDF5 file')
-    parser.add_argument('--weather_path', type=str, default='../data/weather_season_data.csv',
+    parser.add_argument('--vcf_path', type=str, default='data/genotypes.vcf', help='Path to VCF file')
+    parser.add_argument('--csv_path', type=str, default='data/parsed_vcf.csv', help='Output CSV file path')
+    parser.add_argument('--h5_path', type=str, default='data/genotypes.h5', help='Path to HDF5 file')
+    parser.add_argument('--weather_path', type=str, default='data/weather_season_data.csv',
                         help='Path to weather data file')
-    parser.add_argument('--phenotypes_path', type=str, default='../data/phenotypes.tsv',
+    parser.add_argument('--phenotypes_path', type=str, default='data/phenotypes.tsv',
                         help='Path to phenotypes data file')
-    parser.add_argument('--vegetation_path', type=str, default='../data/vegetation.tsv',
+    parser.add_argument('--vegetation_path', type=str, default='data/vegetation.tsv',
                         help='Path to vegetation data file')
 
     # Аргументы для обучения модели
-    parser.add_argument('--train_path', type=str, default='../data/train_file.csv', help='Path to training data')
+    parser.add_argument('--train_path', type=str, default='data/train_file.csv', help='Path to training data')
     parser.add_argument('--n_threads', type=int, default=4, help='Number of threads')
     parser.add_argument('--n_folds', type=int, default=7, help='Number of folds for cross-validation')
     parser.add_argument('--random_state', type=int, default=52, help='Random state for reproducibility')

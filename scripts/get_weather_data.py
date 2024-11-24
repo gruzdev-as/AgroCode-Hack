@@ -234,24 +234,24 @@ def analyze_soybean_growth(lat, lon, start_year=2019, end_year=2023, planting_da
     return yearly_features
 
 
-def print_growth_analysis(features, year):
-    '''Анализ за определенный год'''
-    print(f'\nSoybean Growth Analysis for {year}:')
+# def print_growth_analysis(features, year):
+#     '''Анализ за определенный год'''
+#     print(f'\nSoybean Growth Analysis for {year}:')
 
-    for period, metrics in features.items():
-        if period != 'season_total':
-            print(f'\n{period.replace('_', ' ').title()} Period:')
-            for metric, value in metrics.items():
-                if 'hours' in metric:
-                    print(f"  {metric}: {value:.0f} hours")
-                elif 'days' in metric:
-                    print(f"  {metric}: {value:.1f} days")
-                else:
-                    print(f"  {metric}: {value:.2f}")
+#     for period, metrics in features.items():
+#         if period != 'season_total':
+#             print(f'\n{period.replace('_', ' ').title()} Period:')
+#             for metric, value in metrics.items():
+#                 if 'hours' in metric:
+#                     print(f"  {metric}: {value:.0f} hours")
+#                 elif 'days' in metric:
+#                     print(f"  {metric}: {value:.1f} days")
+#                 else:
+#                     print(f"  {metric}: {value:.2f}")
 
-    print('\nSeason Totals:')
-    for metric, value in features['season_total'].items():
-        print(f'  {metric}: {value:.2f}')
+#     print('\nSeason Totals:')
+#     for metric, value in features['season_total'].items():
+#         print(f'  {metric}: {value:.2f}')
 
 
 def flatten_nested_dict(data):
@@ -295,4 +295,4 @@ def get_weather_data(
     kursk_df = flatten_nested_dict(final_kursk)
 
     df = pd.concat([voronezh_df, kursk_df], axis=0)
-    df.to_csv(r'..\data\weather_season_data.csv')
+    df.to_csv(r'data/weather_season_data.csv')
